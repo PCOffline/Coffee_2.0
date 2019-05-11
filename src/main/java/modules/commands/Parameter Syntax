@@ -52,7 +52,7 @@ Examples:
 ID: 0;
 NAME: Name;
 TYPE: Required;
-CONDITION: Role = Role Name; Mention = False; Syntax = Equals "Text";
+CONDITION: Role = "Role Name"; Mention = False; Syntax = Equals "Text";
 CHILD: 1,2;
 
 Note: By default conditions are set to be AND. If one condition returns false, the parameter's validity is false.
