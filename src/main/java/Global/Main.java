@@ -4,10 +4,15 @@ import crypto.Secret;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.RichPresence;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.user.update.UserUpdateGameEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.managers.GuildController;
 
 import javax.security.auth.login.LoginException;
 import java.util.Random;
@@ -44,6 +49,22 @@ public class Main extends ListenerAdapter {
             e.getMessage().delete().queue();
             e.getMember().getUser().openPrivateChannel().queue(channel -> channel.sendMessage("Hello master, how shall I serve you?").queue());
         }
+
     }
 
+    @Override
+    public void onUserUpdateGame(UserUpdateGameEvent e) {
+        System.out.print("UserUpdateGame");
+        Member member = e.getMember();
+        Game game = member.getGame();
+        String hng = "Heroes & Generals";
+        GuildController controller = e.getGuild().getController();
+        Role role = e.getGuild().getRolesByName(hng, true).get(0);
+        String regex = "Heroes (and|&) Generals( WWII)?";
+
+        if (game != null && (game.getName().equalsIgnoreCase(hng) || game.getName().equalsIgnoreCase("Heroes & Generals WWII")))
+            controller.addSingleRoleToMember(member, role).queue();
+        else if (member.getRoles().contains(role))
+            controller.removeSingleRoleFromMember(member, role).queue();
+    }
 }
