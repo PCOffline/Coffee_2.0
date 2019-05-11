@@ -62,7 +62,7 @@ public class Main extends ListenerAdapter {
         Role role = e.getGuild().getRolesByName(hng, true).get(0);
         String regex = "Heroes (and|&) Generals( WWII)?";
 
-        if (game != null && (game.getName().equalsIgnoreCase(hng) || game.getName().equalsIgnoreCase("Heroes & Generals WWII")))
+        if (game != null && (game.getName().matches(regex)))
             controller.addSingleRoleToMember(member, role).queue();
         else if (member.getRoles().contains(role))
             controller.removeSingleRoleFromMember(member, role).queue();
