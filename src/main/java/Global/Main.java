@@ -54,12 +54,11 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onUserUpdateGame(UserUpdateGameEvent e) {
-        System.out.print("UserUpdateGame");
         Member member = e.getMember();
         Game game = member.getGame();
-        String hng = "Heroes & Generals";
+        String hng = "573827985103388687";
         GuildController controller = e.getGuild().getController();
-        Role role = e.getGuild().getRolesByName(hng, true).get(0);
+        Role role = e.getGuild().getRoleById(hng);
         String regex = "Heroes (and|&) Generals( WWII)?";
 
         if (game != null && (game.getName().matches(regex)))
