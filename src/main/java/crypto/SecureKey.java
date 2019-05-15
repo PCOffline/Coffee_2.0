@@ -1,5 +1,8 @@
 package crypto;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.Objects;
@@ -7,14 +10,15 @@ import java.util.Random;
 
 class SecureKey {
 
-    private static final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final String lower = upper.toLowerCase(Locale.ROOT);
-    private static final String digits = "0123456789";
-    private static final String special = "!@#$%^&*()-=+[]{}/.?<>'";
-    private static final String alphanumeric = upper + lower + digits + special;
+    private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWER = UPPER.toLowerCase(Locale.ROOT);
+    private static final String DIGITS = "0123456789";
+    private static final String SPECIAL = "!@#$%^&*()-=+[]{}/.?<>'";
+    private static final String ALPHANUMERIC = UPPER + LOWER + DIGITS + SPECIAL;
     private final Random random;
     private final char[] symbols;
     private final char[] buf;
+    private Logger logger = LoggerFactory.getLogger(Secret.class);
 
     private SecureKey(int length, Random random, String symbols) {
         if (length < 1) throw new IllegalArgumentException();
@@ -25,14 +29,14 @@ class SecureKey {
     }
 
     /**
-     * Create an alphanumeric string generator.
+     * Create an ALPHANUMERIC string generator.
      */
     private SecureKey(int length, Random random) {
-        this(length, random, alphanumeric);
+        this(length, random, ALPHANUMERIC);
     }
 
     /**
-     * Create an alphanumeric strings from a secure generator.
+     * Create an ALPHANUMERIC strings from a secure generator.
      */
     private SecureKey(int length) {
         this(length, new SecureRandom());
@@ -51,7 +55,8 @@ class SecureKey {
     String nextString() {
         for (int idx = 0; idx < buf.length; ++idx)
             buf[idx] = symbols[random.nextInt(symbols.length)];
-        System.out.println(new String(buf));
+        String bufs = new String(buf);
+        logger.info(bufs);
         return new String(buf);
     }
 
