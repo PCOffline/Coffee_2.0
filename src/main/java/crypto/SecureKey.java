@@ -53,7 +53,7 @@ class SecureKey {
      * Generate a random string.
      */
     String nextString() {
-        for (int idx = 0; idx < buf.length; ++idx)
+        for (int idx = 0; idx < buf.length; idx++)
             buf[idx] = symbols[random.nextInt(symbols.length)];
         String bufs = new String(buf);
         logger.info(bufs);

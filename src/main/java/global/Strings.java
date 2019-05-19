@@ -1,11 +1,7 @@
 package global;
 
-public class Strings {
+class Strings {
 
-    public static final String DEFAULT_PREFIX = "?";
-    public static final String GUILD_PATH = "";
-    public static final String CONFIG_PATH = "";
-    public static final String TICKET_PATH = "";
     static final String PREFIX = "?";
     static final String WELCOME = "Welcome _USER_ to Java Clan! We hope you enjoy, but before you can access all of our channels please make sure to read the rules:" +
             "\n **Chat Rules**\n" +
@@ -24,7 +20,7 @@ public class Strings {
             "• Trolling is allowed, though if you have someone from this server in a squad, warn them before, we don't want people crying all over the server!\n" +
             "• No hacking, cheating, exploiting glitches and bugs, it is not only annoying, but is also against the ToS of ALL the games you play and sometimes bans ALL the players that played with you, even if they did not cheat :angry:" +
             "By reacting to this message with :ok_hand: you agree to follow the rules";
-    static String[] magicShellYesNo = new String[]{"Yes", "Maybe", "Indeed", "No way!", "Never", "For sure!", "At some point in life", "In your dreams!"};
+    static String[] magicShellYesNo = new String[]{"Yes", "Maybe", "Indeed", "No way!", "Never", "For sure!", "In your dreams!"};
 
     private Strings() {
 

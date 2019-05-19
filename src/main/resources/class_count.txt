@@ -1,0 +1,6 @@
+Infantry: 3
+Recon: 0
+Paratrooper: 0
+Tanker: 0
+Pilot: 0
+General: 0
