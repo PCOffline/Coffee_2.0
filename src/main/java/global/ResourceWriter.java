@@ -5,12 +5,12 @@ public class ResourceWriter extends FileWrite {
     private static final String CLASS_COUNT = "src/main/resources/class_count.txt";
     private static final String CLASS_PATH = "src/main/resources/classes.txt";
     private static final String AT_PATH = "src/main/resources/assault_teams.txt";
-    private static final String INF = "Infantry";
-    private static final String REC = "Recon";
-    private static final String PAR = "Paratrooper";
-    private static final String TAN = "Tanker";
-    private static final String PIL = "Pilot";
-    private static final String GEN = "General";
+    private static final String INF = "Infantries";
+    private static final String REC = "Recons";
+    private static final String PAR = "Paratroopers";
+    private static final String TAN = "Tankers";
+    private static final String PIL = "Pilots";
+    private static final String GEN = "Generals";
     private static final String[] classes = {INF, REC, PAR, TAN, PIL, GEN};
 
     private ResourceWriter() {

@@ -1,6 +1,6 @@
-Infantry: 3
-Recon: 0
-Paratrooper: 0
-Tanker: 0
-Pilot: 0
-General: 0
+Infantries: 23
+Recons: 4
+Paratroopers: 7
+Tankers: 7
+Pilots: 5
+Generals: 0

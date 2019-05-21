@@ -79,32 +79,40 @@ public class Main extends ListenerAdapter {
         User author = e.getAuthor();
         String asMention = author.getAsMention();
         String messageId = message.getId();
-        List<Member> mentionedMembers = message.getMentionedMembers();
+        Guild guild = e.getGuild();
+        String first = split[0];
+        String lowerCase = contentRaw.toLowerCase();
+        Member member = e.getMember();
 
-        if (split[0].matches(regex)) {
+        if (guild == null || messageChannel.getType().equals(ChannelType.PRIVATE)) {
+            return;
+        }
+
+        List<Member> mentionedMembers = message.getMentionedMembers();
+        Member mentionedMember = mentionedMembers.get(0);
+        User user = mentionedMember.getUser();
+        String avatarUrl = user.getAvatarUrl();
+
+        if (first.matches(regex)) {
             messageChannel.sendMessage(asMention + " " + Strings.magicShellYesNo[new Random().nextInt(Strings.magicShellYesNo.length)]).queue();
         }
 
-        if (split[0].equalsIgnoreCase(Strings.PREFIX + "vote")
+        if (first.equalsIgnoreCase(Strings.PREFIX + "vote")
                 && split.length > 1) {
             messageChannel.addReactionById(messageId, "\u2705").queue();
             messageChannel.addReactionById(messageId, "\u274C").queue();
         }
 
-        String s = contentRaw.toLowerCase();
-        if (s.equalsIgnoreCase("i love coffee") || (s.contains("I") && s.contains("love") && s.contains("coffee"))) {
-            e.getGuild().getController().addSingleRoleToMember(e.getMember(), e.getGuild().getRoleById(578981415027474462L)).queue();
-            e.getChannel().sendMessage("aww ty :blush:").queue();
+        if (lowerCase.equalsIgnoreCase("i love coffee") || (lowerCase.contains("i") && lowerCase.contains("love") && lowerCase.contains("coffee"))) {
+            guild.getController().addSingleRoleToMember(member, guild.getRoleById(578981415027474462L)).queue();
+            messageChannel.sendMessage("aww ty :blush:").queue();
         }
 
-        if (messageChannel.getIdLong() == 574276000414826506L && split[0].equalsIgnoreCase(Strings.PREFIX + "class")) {
+        if (messageChannel.getIdLong() == 574276000414826506L && first.equalsIgnoreCase(Strings.PREFIX + "class")) {
             if (mentionedMembers.size() == 1) {
-                Member member = mentionedMembers.get(0);
-                User user = member.getUser();
-                String avatarUrl = user.getAvatarUrl();
-                e.getChannel().sendMessage(embed(member.getEffectiveName() + " Classes", null, null, ResourceWriter.getClasses(user.getIdLong()), Color.cyan, null, null, avatarUrl, null)).queue();
+                messageChannel.sendMessage(embed(mentionedMember.getEffectiveName() + " Classes", null, null, ResourceWriter.getClasses(user.getIdLong()), Color.cyan, null, null, avatarUrl, null)).queue();
             } else {
-                MessageAction invalidUseOfClassCommand = e.getChannel().sendMessage("Invalid use of class command");
+                MessageAction invalidUseOfClassCommand = messageChannel.sendMessage("Invalid use of class command");
                 if (split.length < 3)
                     invalidUseOfClassCommand.queue();
                 else {
@@ -113,30 +121,30 @@ public class Main extends ListenerAdapter {
                             case "inf":
                             case "infantry":
                                 ResourceWriter.addToClass(0);
-                                ResourceWriter.addToClass(0, e.getAuthor().getIdLong(), split[2], contentRaw.substring(split[0].length() + split[1].length() + split[2].length() + 3));
+                                ResourceWriter.addToClass(0, e.getAuthor().getIdLong(), split[2], contentRaw.substring(first.length() + split[1].length() + split[2].length() + 3));
                                 break;
                             case "para":
                             case "parachute":
                             case "paratrooper":
                                 ResourceWriter.addToClass(1);
-                                ResourceWriter.addToClass(1, e.getAuthor().getIdLong(), split[2], contentRaw.substring(split[0].length() + split[1].length() + split[2].length() + 3));
+                                ResourceWriter.addToClass(1, e.getAuthor().getIdLong(), split[2], contentRaw.substring(first.length() + split[1].length() + split[2].length() + 3));
                                 break;
                             case "recon":
                             case "sniper":
                                 ResourceWriter.addToClass(2);
-                                ResourceWriter.addToClass(2, e.getAuthor().getIdLong(), split[2], contentRaw.substring(split[0].length() + split[1].length() + split[2].length() + 3));
+                                ResourceWriter.addToClass(2, e.getAuthor().getIdLong(), split[2], contentRaw.substring(first.length() + split[1].length() + split[2].length() + 3));
                                 break;
                             case "tank":
                             case "tanker":
                                 ResourceWriter.addToClass(3);
-                                ResourceWriter.addToClass(3, e.getAuthor().getIdLong(), split[2], contentRaw.substring(split[0].length() + split[1].length() + split[2].length() + 3));
+                                ResourceWriter.addToClass(3, e.getAuthor().getIdLong(), split[2], contentRaw.substring(first.length() + split[1].length() + split[2].length() + 3));
                                 break;
                             case "pilot":
                             case "plane":
                             case "fighter":
                             case "fighterpilot":
                                 ResourceWriter.addToClass(4);
-                                ResourceWriter.addToClass(4, e.getAuthor().getIdLong(), split[2], contentRaw.substring(split[0].length() + split[1].length() + split[2].length() + 3));
+                                ResourceWriter.addToClass(4, e.getAuthor().getIdLong(), split[2], contentRaw.substring(first.length() + split[1].length() + split[2].length() + 3));
                                 break;
                             default:
                                 invalidUseOfClassCommand.queue();
@@ -178,13 +186,15 @@ public class Main extends ListenerAdapter {
                     }
 
                     if (split[2].matches("([1-9]|1[0-8])"))
-                        e.getChannel().sendMessage("Successfully added " + split[1] + " to your classes!").queue();
+                        messageChannel.sendMessage("Successfully added " + split[1] + " to your classes!").queue();
                     else
                         invalidUseOfClassCommand.queue();
                 }
             }
         }
 
+        if (split.length == 1 && contentRaw.equalsIgnoreCase(Strings.PREFIX + "classes"))
+            messageChannel.sendMessage(embed("Classes", null, null, ResourceWriter.getClasses(), Color.GRAY, null, null, null, null)).queue();
 
     }
 

@@ -22,6 +22,13 @@
             <artifactId>JDA</artifactId>
             <version>3.8.3_463</version>
         </dependency>
+        <dependency>
+            <groupId>com.jagrosh</groupId>
+            <artifactId>jda-utilities</artifactId>
+            <version>2.1.5</version>
+            <scope>compile</scope>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 
     <build>
