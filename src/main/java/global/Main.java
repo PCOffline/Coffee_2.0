@@ -1,10 +1,7 @@
 package global;
 
 import crypto.Secret;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
@@ -89,8 +86,8 @@ public class Main extends ListenerAdapter {
         }
 
         List<Member> mentionedMembers = message.getMentionedMembers();
-        Member mentionedMember = mentionedMembers.get(0);
-        User user = mentionedMember.getUser();
+        Member mentionedMember = mentionedMembers != null && !mentionedMembers.isEmpty() ? mentionedMembers.get(0) : null;
+        User user = mentionedMember != null ? mentionedMember.getUser() : e.getAuthor();
         String avatarUrl = user.getAvatarUrl();
 
         if (first.matches(regex)) {
@@ -108,9 +105,14 @@ public class Main extends ListenerAdapter {
             messageChannel.sendMessage("aww ty :blush:").queue();
         }
 
+        if (first.equalsIgnoreCase(Strings.PREFIX + "game") && split.length == 1) {
+
+            e.getMember().getVoiceState().getChannel().putPermissionOverride(guild.getRolesByName("usa", true).get(0)).setDeny(Permission.VOICE_USE_VAD).queue();
+        }
+
         if (messageChannel.getIdLong() == 574276000414826506L && first.equalsIgnoreCase(Strings.PREFIX + "class")) {
-            if (mentionedMembers.size() == 1) {
-                messageChannel.sendMessage(embed(mentionedMember.getEffectiveName() + " Classes", null, null, ResourceWriter.getClasses(user.getIdLong()), Color.cyan, null, null, avatarUrl, null)).queue();
+            if ((mentionedMembers != null ? mentionedMembers.size() : 0) == 1) {
+                messageChannel.sendMessage(embed((mentionedMember != null ? mentionedMember.getEffectiveName() : null) + " Classes", null, null, ResourceWriter.getClasses(user.getIdLong()), Color.cyan, null, null, avatarUrl, null)).queue();
             } else {
                 MessageAction invalidUseOfClassCommand = messageChannel.sendMessage("Invalid use of class command");
                 if (split.length < 3)

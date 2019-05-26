@@ -1,2 +1,2 @@
 
-Infantry 5 M1919 MG
+Infantries 5 M1 Garand

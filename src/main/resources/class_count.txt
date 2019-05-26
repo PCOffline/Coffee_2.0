@@ -1,6 +1,10 @@
-Infantries: 23
+Infantries: 24
 Recons: 4
 Paratroopers: 7
 Tankers: 7
+
+Tankers: 8
+
+Tankers: 8
 Pilots: 5
 Generals: 0
