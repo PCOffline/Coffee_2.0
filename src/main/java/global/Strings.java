@@ -22,6 +22,11 @@ class Strings {
             "By reacting to this message with :ok_hand: you agree to follow the rules";
     static String[] magicShellYesNo = new String[]{"Yes", "Maybe", "Indeed", "No way!", "Never", "For sure!", "In your dreams!"};
 
+    static final String SUCCESS = "\u2705" + " | ";
+    static final String WARNING = "\u26A0" + " | ";
+    static final String ERROR = "\u274c" + " | ";
+    static final String GAME = "Drinking Tea" + " | type ?help";
+
     private Strings() {
 
     }

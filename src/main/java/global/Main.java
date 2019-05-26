@@ -1,7 +1,12 @@
 package global;
 
+import com.jagrosh.jdautilities.command.CommandClient;
+import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import commands.InGameCommand;
 import crypto.Secret;
-import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
@@ -27,11 +32,18 @@ public class Main extends ListenerAdapter {
     private String id;
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        JDA jda = new JDABuilder(Secret.TOKEN).build().awaitReady();
-        jda.addEventListener(new Main());
+        CommandClient commandClient = new CommandClientBuilder()
+                .setPrefix("?")
+                .setOwnerId("168066189128499200")
+                .setGame(Game.playing(Strings.GAME))
+                .setEmojis(Strings.SUCCESS, Strings.WARNING, Strings.ERROR)
+                .addCommands(
+                        new InGameCommand()
+                ).build();
+        JDA jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
 
         jda.setAutoReconnect(true);
-        jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.playing("Drinking Tea"));
+
     }
 
     @Override
@@ -103,11 +115,6 @@ public class Main extends ListenerAdapter {
         if (lowerCase.equalsIgnoreCase("i love coffee") || (lowerCase.contains("i") && lowerCase.contains("love") && lowerCase.contains("coffee"))) {
             guild.getController().addSingleRoleToMember(member, guild.getRoleById(578981415027474462L)).queue();
             messageChannel.sendMessage("aww ty :blush:").queue();
-        }
-
-        if (first.equalsIgnoreCase(Strings.PREFIX + "game") && split.length == 1) {
-
-            e.getMember().getVoiceState().getChannel().putPermissionOverride(guild.getRolesByName("usa", true).get(0)).setDeny(Permission.VOICE_USE_VAD).queue();
         }
 
         if (messageChannel.getIdLong() == 574276000414826506L && first.equalsIgnoreCase(Strings.PREFIX + "class")) {
@@ -225,7 +232,7 @@ public class Main extends ListenerAdapter {
     }
 
 
-    private MessageEmbed embed(String title, String titleURL, String img, String content, Color color, String footer, String footerURL, String thumbnail, String author) {
+    public static MessageEmbed embed(String title, String titleURL, String img, String content, Color color, String footer, String footerURL, String thumbnail, String author) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(title, titleURL);
         builder.setImage(img);
