@@ -3,6 +3,7 @@ package global;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import commands.InGameCommand;
+import commands.VoteCommand;
 import crypto.Secret;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -12,6 +13,7 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.react.PrivateMessageReactionAddEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.user.update.UserUpdateGameEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.managers.GuildController;
@@ -33,17 +35,31 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] args) throws LoginException, InterruptedException {
         CommandClient commandClient = new CommandClientBuilder()
-                .setPrefix("?")
+                .setPrefix(Constants.PREFIX)
                 .setOwnerId("168066189128499200")
-                .setGame(Game.playing(Strings.GAME))
-                .setEmojis(Strings.SUCCESS, Strings.WARNING, Strings.ERROR)
+                .setGame(Game.playing(Constants.GAME))
+                .useHelpBuilder(true)
+                .setEmojis(Constants.SUCCESS, Constants.WARNING, Constants.ERROR)
                 .addCommands(
-                        new InGameCommand()
+                        new InGameCommand(),
+                        new VoteCommand()
                 ).build();
         JDA jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
 
         jda.setAutoReconnect(true);
 
+    }
+
+    public static MessageEmbed embed(String title, String titleURL, String img, String content, Color color, String footer, String footerURL, String thumbnail, String author) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle(title, titleURL);
+        builder.setImage(img);
+        builder.setDescription(content);
+        builder.setColor(color);
+        builder.setFooter(footer, footerURL);
+        builder.setThumbnail(thumbnail);
+        builder.setAuthor(author);
+        return builder.build();
     }
 
     @Override
@@ -54,8 +70,11 @@ public class Main extends ListenerAdapter {
         privateChannelRestAction.queue(channel -> {
             String asMention = user.getAsMention();
 
-            channel.sendMessage(Strings.WELCOME.replace("_USER_", asMention)).queue((message -> {
-                message.addReaction("\uD83D\uDC4C").queue();
+            channel.sendMessage(Constants.WELCOME.replace("_USER_", asMention)).queue((message -> {
+                message.addReaction(Constants.AGREE).queue();
+                this.id = message.getId();
+            }), ignored -> e.getGuild().getTextChannelById(531472318250090497L).sendMessage(Constants.WELCOME.replace("_USER_", asMention)).queue(message -> {
+                message.addReaction(Constants.AGREE).queue();
                 this.id = message.getId();
             }));
         });
@@ -79,15 +98,31 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent e) {
+        User user = e.getUser();
+        String name = e.getReaction().getReactionEmote().getName();
+        boolean idEquals = e.getMessageId().equals(id);
+        boolean nameEquals = name.equals("\uD83D\uDC4C");
+
+        if (!user.isBot() && nameEquals && idEquals) {
+            Guild guild = user.getMutualGuilds().get(0);
+            GuildController controller = guild.getController();
+            Member member = guild.getMember(user);
+            Role role = guild.getRoleById("571626241216610304");
+
+            controller.addSingleRoleToMember(member, role).queue();
+        }
+    }
+
+    @Override
     public void onMessageReceived(MessageReceivedEvent e) {
-        String regex = "\\" + Strings.PREFIX + "(ms|magicshell)";
+        String regex = "\\" + Constants.PREFIX + "(ms|magicshell)";
         Message message = e.getMessage();
         String contentRaw = message.getContentRaw();
         String[] split = contentRaw.split(" ");
         MessageChannel messageChannel = e.getChannel();
         User author = e.getAuthor();
         String asMention = author.getAsMention();
-        String messageId = message.getId();
         Guild guild = e.getGuild();
         String first = split[0];
         String lowerCase = contentRaw.toLowerCase();
@@ -103,13 +138,7 @@ public class Main extends ListenerAdapter {
         String avatarUrl = user.getAvatarUrl();
 
         if (first.matches(regex)) {
-            messageChannel.sendMessage(asMention + " " + Strings.magicShellYesNo[new Random().nextInt(Strings.magicShellYesNo.length)]).queue();
-        }
-
-        if (first.equalsIgnoreCase(Strings.PREFIX + "vote")
-                && split.length > 1) {
-            messageChannel.addReactionById(messageId, "\u2705").queue();
-            messageChannel.addReactionById(messageId, "\u274C").queue();
+            messageChannel.sendMessage(asMention + " " + Constants.magicShellYesNo[new Random().nextInt(Constants.magicShellYesNo.length)]).queue();
         }
 
         if (lowerCase.equalsIgnoreCase("i love coffee") || (lowerCase.contains("i") && lowerCase.contains("love") && lowerCase.contains("coffee"))) {
@@ -117,7 +146,7 @@ public class Main extends ListenerAdapter {
             messageChannel.sendMessage("aww ty :blush:").queue();
         }
 
-        if (messageChannel.getIdLong() == 574276000414826506L && first.equalsIgnoreCase(Strings.PREFIX + "class")) {
+        if (messageChannel.getIdLong() == 574276000414826506L && first.equalsIgnoreCase(Constants.PREFIX + "class")) {
             if ((mentionedMembers != null ? mentionedMembers.size() : 0) == 1) {
                 messageChannel.sendMessage(embed((mentionedMember != null ? mentionedMember.getEffectiveName() : null) + " Classes", null, null, ResourceWriter.getClasses(user.getIdLong()), Color.cyan, null, null, avatarUrl, null)).queue();
             } else {
@@ -202,7 +231,7 @@ public class Main extends ListenerAdapter {
             }
         }
 
-        if (split.length == 1 && contentRaw.equalsIgnoreCase(Strings.PREFIX + "classes"))
+        if (split.length == 1 && contentRaw.equalsIgnoreCase(Constants.PREFIX + "classes"))
             messageChannel.sendMessage(embed("Classes", null, null, ResourceWriter.getClasses(), Color.GRAY, null, null, null, null)).queue();
 
     }
@@ -227,20 +256,7 @@ public class Main extends ListenerAdapter {
         if (e.getRoles().get(0).getId().equals("531475341244366848")) {
             TextChannel channel = e.getGuild().getTextChannelById("574276000414826506");
             Member member = e.getMember();
-            channel.sendMessage(embed("Classes & Assault Teams", null, null, "Welcome " + member.getAsMention() + " to USA! Please write down your classes in the next format: \n`" + Strings.PREFIX + "class Class Type (Infantry, Paratrooper, Recon, Tanker, Pilot) | Rank | Main Weapon`\n **Example: **`" + Strings.PREFIX + "class Infantry 12 M3 Grease Gun`\n Please do this for each class you have.\n The format for assault teams is: \n`" + Strings.PREFIX + "at AT Type Level Quantity of Assault Teams of that Type & Level`\n**Example: **`" + Strings.PREFIX + "at recon 1 20`", Color.green, null, null, null, null)).queue();
+            channel.sendMessage(embed("Classes & Assault Teams", null, null, "Welcome " + member.getAsMention() + " to USA! Please write down your classes in the next format: \n`" + Constants.PREFIX + "class Class Type (Infantry, Paratrooper, Recon, Tanker, Pilot) | Rank | Main Weapon`\n **Example: **`" + Constants.PREFIX + "class Infantry 12 M3 Grease Gun`\n Please do this for each class you have.\n The format for assault teams is: \n`" + Constants.PREFIX + "at AT Type Level Quantity of Assault Teams of that Type & Level`\n**Example: **`" + Constants.PREFIX + "at recon 1 20`", Color.green, null, null, null, null)).queue();
         }
-    }
-
-
-    public static MessageEmbed embed(String title, String titleURL, String img, String content, Color color, String footer, String footerURL, String thumbnail, String author) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(title, titleURL);
-        builder.setImage(img);
-        builder.setDescription(content);
-        builder.setColor(color);
-        builder.setFooter(footer, footerURL);
-        builder.setThumbnail(thumbnail);
-        builder.setAuthor(author);
-        return builder.build();
     }
 }

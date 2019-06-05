@@ -1,4 +1,4 @@
-Infantries: 24
+Infantries: 25
 Recons: 4
 Paratroopers: 7
 Tankers: 7
