@@ -3,6 +3,7 @@ package commands;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import global.Constants;
+import global.Main;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.Role;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+@SuppressWarnings({"SpellCheckingInspection", "WeakerAccess"})
 abstract class CommandExt extends Command {
 
     static final Category OWNER = new Category("Owner");
@@ -22,7 +24,7 @@ abstract class CommandExt extends Command {
     String description;
     String usage;
     String example;
-    String[] channels = new String[]{Constants.COFFEE, Constants.COMMANDS};
+    long[] channels = {Constants.COFFEE, Constants.COMMANDS};
 
     private int isArgs() {
         boolean req = usage.contains("<");
@@ -40,15 +42,14 @@ abstract class CommandExt extends Command {
         return -1;
     }
 
-    private String getAvailableChannels(Guild guild) {
+    private String getAvailableChannels() {
         StringBuilder message = new StringBuilder();
-        for (String ch : channels) {
-            message.append(guild.getTextChannelById(ch).getAsMention()).append(" ");
+        for (long ch : channels) {
+            message.append(Main.getChannel(ch).getAsMention()).append(" ");
         }
         return message.toString();
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
     private boolean prevalidate(CommandEvent event) {
         List<Role> roles = event.getMember().getRoles();
         Guild guild = event.getGuild();
@@ -69,7 +70,7 @@ abstract class CommandExt extends Command {
                 && !roles.contains(guild.getRoleById(Constants.ADMIN)) && !roles.contains(guild.getRoleById(Constants.MODERATOR))) {
             event.getMessage().delete().queue();
             channel.sendMessage("You cannot use this command here!\n"
-                    + "Available channels: " + getAvailableChannels(guild)).queue(message -> new Timer().schedule(new TimerTask() {
+                    + "Available channels: " + getAvailableChannels()).queue(message -> new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     message.delete().queue();

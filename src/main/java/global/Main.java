@@ -32,6 +32,7 @@ import java.util.Random;
 public class Main extends ListenerAdapter {
 
     private String id;
+    private static JDA jda;
 
     public static void main(String[] args) throws LoginException, InterruptedException {
         CommandClient commandClient = new CommandClientBuilder()
@@ -44,7 +45,7 @@ public class Main extends ListenerAdapter {
                         new InGameCommand(),
                         new VoteCommand()
                 ).build();
-        JDA jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
+        jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
 
         jda.setAutoReconnect(true);
 
@@ -236,6 +237,11 @@ public class Main extends ListenerAdapter {
 
     }
 
+    @SuppressWarnings("WeakerAccess")
+    public static TextChannel getChannel(long id) {
+        return jda.getGuildById(Constants.GUILD).getTextChannelById(id);
+    }
+
     @Override
     public void onUserUpdateGame(UserUpdateGameEvent e) {
         Member member = e.getMember();
@@ -253,10 +259,10 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent e) {
-        if (e.getRoles().get(0).getId().equals("531475341244366848")) {
-            TextChannel channel = e.getGuild().getTextChannelById("574276000414826506");
+        System.out.printf("%s", Constants.USA);
+        if (e.getRoles().get(0).getId().equals((Constants.USA + "").replace("L", ""))) {
             Member member = e.getMember();
-            channel.sendMessage(embed("Classes & Assault Teams", null, null, "Welcome " + member.getAsMention() + " to USA! Please write down your classes in the next format: \n`" + Constants.PREFIX + "class Class Type (Infantry, Paratrooper, Recon, Tanker, Pilot) | Rank | Main Weapon`\n **Example: **`" + Constants.PREFIX + "class Infantry 12 M3 Grease Gun`\n Please do this for each class you have.\n The format for assault teams is: \n`" + Constants.PREFIX + "at AT Type Level Quantity of Assault Teams of that Type & Level`\n**Example: **`" + Constants.PREFIX + "at recon 1 20`", Color.green, null, null, null, null)).queue();
+            getChannel(Constants.USA_CHAT).sendMessage("Welcome " + member.getAsMention() + "! Congratulations on your USA role! :D Please write down your classes at " + getChannel(Constants.CLASSES)).queue();
         }
     }
 }
