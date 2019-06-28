@@ -51,6 +51,8 @@ abstract class CommandExt extends Command {
     }
 
     private boolean prevalidate(CommandEvent event) {
+        if (event.getAuthor().isBot() || event.getAuthor().isFake())
+            return false;
         List<Role> roles = event.getMember().getRoles();
         Guild guild = event.getGuild();
         MessageChannel channel = event.getChannel();
@@ -83,6 +85,10 @@ abstract class CommandExt extends Command {
 
     boolean validate(CommandEvent event) {
         return !prevalidate(event);
+    }
+
+    protected void helpBuilder() {
+
     }
 
 }

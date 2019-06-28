@@ -45,20 +45,23 @@ public class Constants {
     public static final String UPVOTE = "\uD83D\uDC4D";
     public static final String SUCCESS = "\u2705";
     public static final String WARNING = "\u26A0";
-    public static final long ADMIN = 531476514655698944L;
+    public static final String AGREE = "\uD83D\uDC4C";
+    public static final String HAMMER = "\uD83D\uDD28";
+    public static final String BOOT = "\uD83D\uDC62";
+    public static final String MUTE = "\uD83D\uDD07";
 
     // Roles
+    public static final long ADMIN = 531476514655698944L;
     public static final long MEMBER = 571626241216610304L;
     public static final long MODERATOR = 531476298426744833L;
     public static final long USA = 531475341244366848L;
-    public static final long AFRICA = 587633156832624655L;
 
     // Regions
+    public static final long AFRICA = 587633156832624655L;
     public static final long ASIA = 587633262697119745L;
     public static final long AUSTRALIA = 574210958101053441L;
     public static final long EUROPE = 573937682997182470L;
     public static final long NORTH_AMERICA = 573937803239620608L;
-    static final String AGREE = "\uD83D\uDC4C";
 
 
     private Constants() {
