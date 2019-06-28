@@ -2,8 +2,7 @@ package global;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import commands.InGameCommand;
-import commands.VoteCommand;
+import commands.*;
 import crypto.Secret;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
@@ -22,6 +21,7 @@ import net.dv8tion.jda.core.requests.restaction.MessageAction;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -31,8 +31,8 @@ import java.util.Random;
 
 public class Main extends ListenerAdapter {
 
-    private String id;
     private static JDA jda;
+    private String id;
 
     public static void main(String[] args) throws LoginException, InterruptedException {
         CommandClient commandClient = new CommandClientBuilder()
@@ -43,7 +43,10 @@ public class Main extends ListenerAdapter {
                 .setEmojis(Constants.SUCCESS, Constants.WARNING, Constants.ERROR)
                 .addCommands(
                         new InGameCommand(),
-                        new VoteCommand()
+                        new VoteCommand(),
+                        new KickCommand(),
+                        new MuteCommand(),
+                        new BanCommand()
                 ).build();
         jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
 
@@ -61,6 +64,11 @@ public class Main extends ListenerAdapter {
         builder.setThumbnail(thumbnail);
         builder.setAuthor(author);
         return builder.build();
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static TextChannel getChannel(long id) {
+        return jda.getGuildById(Constants.GUILD).getTextChannelById(id);
     }
 
     @Override
@@ -137,6 +145,15 @@ public class Main extends ListenerAdapter {
         Member mentionedMember = mentionedMembers != null && !mentionedMembers.isEmpty() ? mentionedMembers.get(0) : null;
         User user = mentionedMember != null ? mentionedMember.getUser() : e.getAuthor();
         String avatarUrl = user.getAvatarUrl();
+
+        long line = FileWrite.getLine(Constants.MUTED, author.getId(), true, false);
+        if (line != -1) {
+            String[] s = FileWrite.goLine(Constants.MUTED, line).split(" ");
+            if (!s[1].equals("-1") && OffsetDateTime.now().isAfter(OffsetDateTime.parse(s[1]))) {
+                FileWrite.deleteLine(Constants.MUTED, line);
+                guild.getController().setMute(member, false).queue();
+            }
+        }
 
         if (first.matches(regex)) {
             messageChannel.sendMessage(asMention + " " + Constants.magicShellYesNo[new Random().nextInt(Constants.magicShellYesNo.length)]).queue();
@@ -235,11 +252,6 @@ public class Main extends ListenerAdapter {
         if (split.length == 1 && contentRaw.equalsIgnoreCase(Constants.PREFIX + "classes"))
             messageChannel.sendMessage(embed("Classes", null, null, ResourceWriter.getClasses(), Color.GRAY, null, null, null, null)).queue();
 
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static TextChannel getChannel(long id) {
-        return jda.getGuildById(Constants.GUILD).getTextChannelById(id);
     }
 
     @Override

@@ -63,6 +63,8 @@ public class Constants {
     public static final long EUROPE = 573937682997182470L;
     public static final long NORTH_AMERICA = 573937803239620608L;
 
+    // Files
+    public static final String MUTED = "src/main/resources/muted.txt";
 
     private Constants() {
     }

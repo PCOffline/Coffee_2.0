@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.Role;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,8 +67,8 @@ abstract class CommandExt extends Command {
             event.replyError("This command requires arguments");
             return false;
         }
-        if (channels != null && guildOnly && !Arrays.asList(channels).contains(channel.getId())
-                && !roles.contains(guild.getRoleById(Constants.ADMIN)) && !roles.contains(guild.getRoleById(Constants.MODERATOR))) {
+        if ((channels != null && guildOnly) && (!contains(channels, channel.getIdLong())
+                && !roles.contains(guild.getRoleById(Constants.ADMIN)) && !roles.contains(guild.getRoleById(Constants.MODERATOR)))) {
             event.getMessage().delete().queue();
             channel.sendMessage("You cannot use this command here!\n"
                     + "Available channels: " + getAvailableChannels()).queue(message -> new Timer().schedule(new TimerTask() {
@@ -83,8 +82,16 @@ abstract class CommandExt extends Command {
         return true;
     }
 
+    private boolean contains(long[] channels, long idLong) {
+        for (long l : channels) {
+            if (l == idLong)
+                return true;
+        }
+        return false;
+    }
+
     boolean validate(CommandEvent event) {
-        return !prevalidate(event);
+        return prevalidate(event);
     }
 
     protected void helpBuilder() {

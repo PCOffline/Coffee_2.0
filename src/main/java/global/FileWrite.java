@@ -9,11 +9,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-class FileWrite {
+public class FileWrite {
 
     private static final Logger logger = LoggerFactory.getLogger(FileWrite.class);
 
-    protected FileWrite() {
+    public FileWrite() {
     }
 
     /**
@@ -24,7 +24,7 @@ class FileWrite {
      */
 
     @NotNull
-    protected static String readFile(String path) {
+    public static String readFile(String path) {
         StringBuilder raw;
         String line;
         String text = null;
@@ -59,7 +59,7 @@ class FileWrite {
      */
 
     @NotNull
-    protected static String readFile(String path, long limit) {
+    public static String readFile(String path, long limit) {
         StringBuilder raw;
         String line;
         String text = null;
@@ -95,7 +95,7 @@ class FileWrite {
      */
 
     @NotNull
-    protected static String readFile(long limit, String path) {
+    public static String readFile(long limit, String path) {
         StringBuilder raw;
         String line;
         String text = null;
@@ -128,7 +128,7 @@ class FileWrite {
     }
 
     @NotNull
-    protected static String readFile(String path, long start, long end) {
+    public static String readFile(String path, long start, long end) {
         StringBuilder res = new StringBuilder();
         for (long i = start; i <= end; i++) {
             res.append(goLine(path, i)).append("\n");
@@ -143,10 +143,9 @@ class FileWrite {
      * @param value The value to write in the file
      */
 
-    protected static void writeFile(String path, String value) {
+    public static void writeFile(String path, String value) {
 
         try (FileOutputStream outputStream = new FileOutputStream(path)) {
-
             outputStream.write((readFile(path) + "\n" + value).getBytes());
         } catch (IOException e) {
             logger.info(e.getMessage());
@@ -161,7 +160,7 @@ class FileWrite {
      * @param line  line to write the value into the selected line
      */
 
-    protected static void writeFile(String path, String value, long line) {
+    public static void writeFile(String path, String value, long line) {
 
         String s = line > 1 ? readFile(path, line - 1) : "";
         String s1 = readFile(line + 1, path);
@@ -180,7 +179,7 @@ class FileWrite {
      * @param line The line number to be deleted
      */
 
-    protected static void deleteLine(String path, long line) {
+    public static void deleteLine(String path, long line) {
 
         try (FileOutputStream outputStream = new FileOutputStream(path)) {
             outputStream.write((readFile(path, line - 1) + "\n" + readFile(line + 1, path)).getBytes());
@@ -199,7 +198,7 @@ class FileWrite {
      * @return True if keyword is found
      */
 
-    protected static boolean keywordExist(String path, String keyword, boolean ignoreCase, boolean keywordIsLine) {
+    public static boolean keywordExist(String path, String keyword, boolean ignoreCase, boolean keywordIsLine) {
         String line;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
@@ -232,7 +231,7 @@ class FileWrite {
      * @return True if keyword is found
      */
 
-    protected static boolean keywordExist(String path, String keyword, boolean ignoreCase, boolean keywordIsLine, long start) {
+    public static boolean keywordExist(String path, String keyword, boolean ignoreCase, boolean keywordIsLine, long start) {
         String line;
         int count = 0;
 
@@ -271,7 +270,7 @@ class FileWrite {
      * @return The line of the first occurrence of the keyword as a whole line or as a part of a line in the file
      */
 
-    protected static long getLine(String path, String keyword, boolean ignoreCase, boolean keywordIsLine) {
+    public static long getLine(String path, String keyword, boolean ignoreCase, boolean keywordIsLine) {
         String line;
         int count = 1;
 
@@ -311,7 +310,7 @@ class FileWrite {
      * @return The line of the first occurrence of the keyword as a whole line or as a part of a line in the file
      */
 
-    protected static long getLine(String path, String keyword, boolean ignoreCase, boolean keywordIsLine, long start) {
+    public static long getLine(String path, String keyword, boolean ignoreCase, boolean keywordIsLine, long start) {
         String line;
         int count = 1;
 
@@ -351,7 +350,7 @@ class FileWrite {
      * @return The content of a specific line
      */
 
-    protected static String goLine(String path, long line) {
+    public static String goLine(String path, long line) {
         return readFile(line, path).split("\n")[0];
     }
 

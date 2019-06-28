@@ -1,6 +1,6 @@
 package global;
 
-public class ResourceWriter extends FileWrite {
+class ResourceWriter extends FileWrite {
 
     private static final String CLASS_COUNT = "src/main/resources/class_count.txt";
     private static final String CLASS_PATH = "src/main/resources/classes.txt";

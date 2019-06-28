@@ -11,7 +11,7 @@ public class KickCommand extends ModCommand {
         super();
         this.arguments = "<member> [reason]";
         this.usage = Constants.PREFIX + this.name + " " + arguments;
-        this.example = description.replace(arguments, "FPGa#9995 he's too cool");
+        this.example = description.replace(arguments, "@FPGa#9995 he's too cool");
         this.category = MOD;
         this.botPermissions = new Permission[]{Permission.KICK_MEMBERS};
         this.requiredRole = "Moderator, Administrator";
@@ -27,7 +27,7 @@ public class KickCommand extends ModCommand {
         for (String s : args) {
             reason.append(s.equals(args[0]) ? "" : s);
         }
-        commandEvent.getGuild().getTextChannelById(Constants.MOD_LOG).sendMessage(Constants.BOOT + "**KICKED** " + args[0] + " for " + reason + " by " + commandEvent.getAuthor().getAsMention()).queue();
+        commandEvent.getGuild().getTextChannelById(Constants.MOD_LOG).sendMessage(Constants.BOOT + "**KICKED** " + args[0] + (args.length > 1 ? " for " + reason.toString() : "") + " by " + commandEvent.getAuthor().getAsMention()).queue();
     }
 
     @Override
@@ -35,7 +35,15 @@ public class KickCommand extends ModCommand {
         if (!validate(commandEvent))
             return;
         Guild guild = commandEvent.getGuild();
-        guild.getController().kick(guild.getMemberById(commandEvent.getArgs().split(" ")[0].replace("<@", "").replace(">", ""))).queue();
+        String[] args = commandEvent.getArgs().split(" ");
+        StringBuilder reason = new StringBuilder();
+        for (String s : args) {
+            reason.append(s.equals(args[0]) ? "" : s);
+        }
+        if (args.length > 1)
+            guild.getController().kick(guild.getMemberById(commandEvent.getArgs().split(" ")[0].replace("<@", "").replace(">", ""))).queue();
+        else
+            guild.getController().kick(guild.getMemberById(commandEvent.getArgs().split(" ")[0].replace("<@", "").replace(">", "")), reason.toString()).queue();
         modLog(commandEvent);
     }
 }
