@@ -49,6 +49,7 @@ public class Constants {
     public static final String HAMMER = "\uD83D\uDD28";
     public static final String BOOT = "\uD83D\uDC62";
     public static final String MUTE = "\uD83D\uDD07";
+    public static final String SPEAKER = "\uD83D\uDD08";
 
     // Roles
     public static final long ADMIN = 531476514655698944L;

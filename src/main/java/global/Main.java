@@ -46,7 +46,8 @@ public class Main extends ListenerAdapter {
                         new VoteCommand(),
                         new KickCommand(),
                         new MuteCommand(),
-                        new BanCommand()
+                        new BanCommand(),
+                        new UnmuteCommand()
                 ).build();
         jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
 
