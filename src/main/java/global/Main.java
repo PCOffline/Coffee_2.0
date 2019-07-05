@@ -23,7 +23,6 @@ import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Main class - Boot Operations
@@ -47,7 +46,8 @@ public class Main extends ListenerAdapter {
                         new KickCommand(),
                         new MuteCommand(),
                         new BanCommand(),
-                        new UnmuteCommand()
+                        new UnmuteCommand(),
+                        new MagicShellCommand()
                 ).build();
         jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
 
@@ -126,13 +126,11 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
-        String regex = "\\" + Constants.PREFIX + "(ms|magicshell)";
         Message message = e.getMessage();
         String contentRaw = message.getContentRaw();
         String[] split = contentRaw.split(" ");
         MessageChannel messageChannel = e.getChannel();
         User author = e.getAuthor();
-        String asMention = author.getAsMention();
         Guild guild = e.getGuild();
         String first = split[0];
         String lowerCase = contentRaw.toLowerCase();
@@ -154,10 +152,6 @@ public class Main extends ListenerAdapter {
                 FileWrite.deleteLine(Constants.MUTED, line);
                 guild.getController().setMute(member, false).queue();
             }
-        }
-
-        if (first.matches(regex)) {
-            messageChannel.sendMessage(asMention + " " + Constants.magicShellYesNo[new Random().nextInt(Constants.magicShellYesNo.length)]).queue();
         }
 
         if (lowerCase.equalsIgnoreCase("i love coffee") || (lowerCase.contains("i") && lowerCase.contains("love") && lowerCase.contains("coffee"))) {

@@ -25,7 +25,7 @@ public class Constants {
             "• Trolling is allowed, though if you have someone from this server in a squad, warn them before, we don't want people crying all over the server!\n" +
             "• No hacking, cheating, exploiting glitches and bugs, it is not only annoying, but is also against the ToS of ALL the games you play and sometimes bans ALL the players that played with you, even if they did not cheat :angry:" +
             "By reacting to this message with :ok_hand: you agree to follow the rules";
-    public static final String[] magicShellYesNo = new String[]{"Yes", "Maybe", "Indeed", "No way!", "Never", "For sure!", "In your dreams!"};
+    public static final String[] MAGICSHELL = new String[]{"Yes", "Maybe", "Indeed", "No way!", "Never", "For sure!", "In your dreams!"};
 
     // Channels
 
