@@ -12,7 +12,7 @@ class HelpBuilder {
     private HelpBuilder() {
     }
 
-    static MessageEmbed build(Command command) {
+    static MessageEmbed build(CommandExt command) {
         String name = command.getName();
         String s = "`\n";
         String title = name.replace(name.charAt(0), name.substring(0, 1).toUpperCase().toCharArray()[0]) + " Help";

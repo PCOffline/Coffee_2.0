@@ -6,6 +6,8 @@ public class Constants {
     public static final String PREFIX = "?";
     public static final long DELAY = 5000;
     public static final String GAME = "Drinking Tea" + " | type ?help";
+    public static final long OWNER = 168066189128499200L;
+    public static final String OWNER_AS_MENTION = "<@" + OWNER + ">";
     public static final String WELCOME = "Welcome _USER_ to Java Clan! We hope you enjoy, but before you can access all of our channels please make sure to read the rules:" +
             "\n **Chat Rules**\n" +
             "• Try not to be toxic, no one likes it, being toxic, insulting members, etc. may result in a warning\n" +
@@ -25,10 +27,12 @@ public class Constants {
             "• Trolling is allowed, though if you have someone from this server in a squad, warn them before, we don't want people crying all over the server!\n" +
             "• No hacking, cheating, exploiting glitches and bugs, it is not only annoying, but is also against the ToS of ALL the games you play and sometimes bans ALL the players that played with you, even if they did not cheat :angry:" +
             "By reacting to this message with :ok_hand: you agree to follow the rules";
+
+    // Commands
     public static final String[] MAGICSHELL = new String[]{"Yes", "Maybe", "Indeed", "No way!", "Never", "For sure!", "In your dreams!"};
+    public static final String[] oke = new String[]{};
 
     // Channels
-
     public static final long GUILD = 574276000414826506L;
     public static final long COFFEE = 572094755840983061L;
     public static final long COMMANDS = 531472502946398216L;
@@ -53,9 +57,10 @@ public class Constants {
 
     // Roles
     public static final long ADMIN = 531476514655698944L;
-    public static final long MEMBER = 571626241216610304L;
     public static final long MODERATOR = 531476298426744833L;
+    public static final long MEMBER = 571626241216610304L;
     public static final long USA = 531475341244366848L;
+    public static final long COFFEE_LOVER = 578981415027474462L;
 
     // Regions
     public static final long AFRICA = 587633156832624655L;

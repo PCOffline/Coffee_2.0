@@ -146,7 +146,7 @@ public class FileWrite {
     public static void writeFile(String path, String value) {
 
         try (FileOutputStream outputStream = new FileOutputStream(path)) {
-            outputStream.write((readFile(path) + "\n" + value).getBytes());
+            outputStream.write((goLine(path, getLastLine(path)).equals("") ? readFile(path) + value : "\n" + readFile(path) + value).getBytes());
         } catch (IOException e) {
             logger.info(e.getMessage());
         }
@@ -340,6 +340,10 @@ public class FileWrite {
             logger.info(e.getMessage());
             return -1;
         }
+    }
+
+    public static long getLastLine(String path) {
+        return readFile(path).split("\n").length - 1;
     }
 
     /**

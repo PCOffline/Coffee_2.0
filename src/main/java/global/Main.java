@@ -22,7 +22,12 @@ import net.dv8tion.jda.core.requests.restaction.MessageAction;
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Main class - Boot Operations
@@ -67,7 +72,6 @@ public class Main extends ListenerAdapter {
         return builder.build();
     }
 
-    @SuppressWarnings("WeakerAccess")
     public static TextChannel getChannel(long id) {
         return jda.getGuildById(Constants.GUILD).getTextChannelById(id);
     }
@@ -144,19 +148,32 @@ public class Main extends ListenerAdapter {
         Member mentionedMember = mentionedMembers != null && !mentionedMembers.isEmpty() ? mentionedMembers.get(0) : null;
         User user = mentionedMember != null ? mentionedMember.getUser() : e.getAuthor();
         String avatarUrl = user.getAvatarUrl();
-
         long line = FileWrite.getLine(Constants.MUTED, author.getId(), true, false);
         if (line != -1) {
-            String[] s = FileWrite.goLine(Constants.MUTED, line).split(" ");
-            if (!s[1].equals("-1") && OffsetDateTime.now().isAfter(OffsetDateTime.parse(s[1]))) {
+            String[] s = FileWrite.goLine(Constants.MUTED, line).equals("") ? null : FileWrite.goLine(Constants.MUTED, line).split(" ");
+            if (s != null && !s[1].equals("-1") && OffsetDateTime.now().isAfter(ZonedDateTime.parse(s[1], DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm").withZone(ZoneId.of("Europe/London"))).toOffsetDateTime())) {
                 FileWrite.deleteLine(Constants.MUTED, line);
-                guild.getController().setMute(member, false).queue();
+            } else if (s != null && !s[1].equals("-1") && OffsetDateTime.now().isBefore(OffsetDateTime.parse(s[1]))) {
+                e.getMessage().delete().queue();
+                e.getChannel().sendMessage((e.getAuthor().getAsMention() + " you are still muted, your mute will expire at " + s[1])).queue(msg -> {
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            msg.delete().queue();
+                        }
+                    }, 5000);
+                });
+            } else if (s != null && s[1].equals("-1")) {
+                e.getMessage().delete().queue();
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " you are permanently muted!").queue(msg -> {
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            msg.delete().queue();
+                        }
+                    }, 5000);
+                });
             }
-        }
-
-        if (lowerCase.equalsIgnoreCase("i love coffee") || (lowerCase.contains("i") && lowerCase.contains("love") && lowerCase.contains("coffee"))) {
-            guild.getController().addSingleRoleToMember(member, guild.getRoleById(578981415027474462L)).queue();
-            messageChannel.sendMessage("aww ty :blush:").queue();
         }
 
         if (messageChannel.getIdLong() == 574276000414826506L && first.equalsIgnoreCase(Constants.PREFIX + "class")) {
@@ -266,7 +283,6 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent e) {
-        System.out.printf("%s", Constants.USA);
         if (e.getRoles().get(0).getId().equals((Constants.USA + "").replace("L", ""))) {
             Member member = e.getMember();
             getChannel(Constants.USA_CHAT).sendMessage("Welcome " + member.getAsMention() + "! Congratulations on your USA role! :D Please write down your classes at " + getChannel(Constants.CLASSES)).queue();

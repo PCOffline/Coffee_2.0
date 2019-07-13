@@ -13,7 +13,6 @@ public class BanCommand extends ModCommand {
         this.example = description.replace(arguments, "@FPGa#9995 7 he's too cool");
         this.category = MOD;
         this.botPermissions = new Permission[]{Permission.VOICE_MUTE_OTHERS};
-        this.requiredRole = "Moderator, Administrator";
         this.helpBiConsumer = (event, command) -> event.reply(HelpBuilder.build(this));
         this.guildOnly = true;
         this.help = "`" + this.usage + "`" + "\n" + this.description + "\n`" + this.example + "`";
