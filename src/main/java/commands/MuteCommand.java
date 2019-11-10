@@ -17,7 +17,7 @@ public class MuteCommand extends ModCommand {
         this.usage = Constants.PREFIX + this.name + this.arguments;
         this.example = description.replace(arguments, Constants.OWNER_AS_MENTION + " 10m he's too cool");
         this.category = MOD;
-        this.botPermissions = new Permission[]{Permission.MESSAGE_MANAGE};
+        this.botPermissions = new Permission[]{Permission.MANAGE_PERMISSIONS, Permission.MANAGE_ROLES};
         this.help = "`" + this.usage + "`" + "\n" + this.description + "\n`" + this.example + "`";
         this.helpBiConsumer = (event, command) -> event.reply(HelpBuilder.build(this));
         this.guildOnly = true;

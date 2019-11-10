@@ -18,7 +18,7 @@ class SecureKey {
     private final Random random;
     private final char[] symbols;
     private final char[] buf;
-    private Logger logger = LoggerFactory.getLogger(Secret.class);
+    private Logger logger = LoggerFactory.getLogger(SecureKey.class);
 
     private SecureKey(int length, Random random, String symbols) {
         if (length < 1) throw new IllegalArgumentException();

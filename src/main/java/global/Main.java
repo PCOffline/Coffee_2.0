@@ -42,9 +42,9 @@ public class Main extends ListenerAdapter {
         CommandClient commandClient = new CommandClientBuilder()
                 .setPrefix(Constants.PREFIX)
                 .setOwnerId("168066189128499200")
-                .setGame(Game.playing(Constants.GAME))
                 .useHelpBuilder(true)
                 .setEmojis(Constants.SUCCESS, Constants.WARNING, Constants.ERROR)
+                .setGame(Game.playing(Constants.GAME))
                 .addCommands(
                         new InGameCommand(),
                         new VoteCommand(),
@@ -55,8 +55,6 @@ public class Main extends ListenerAdapter {
                         new MagicShellCommand()
                 ).build();
         jda = new JDABuilder(Secret.TOKEN).addEventListener(new Main(), commandClient).setAutoReconnect(true).build().awaitReady();
-
-        jda.setAutoReconnect(true);
 
     }
 
@@ -137,8 +135,6 @@ public class Main extends ListenerAdapter {
         User author = e.getAuthor();
         Guild guild = e.getGuild();
         String first = split[0];
-        String lowerCase = contentRaw.toLowerCase();
-        Member member = e.getMember();
 
         if (guild == null || messageChannel.getType().equals(ChannelType.PRIVATE)) {
             return;
@@ -155,24 +151,20 @@ public class Main extends ListenerAdapter {
                 FileWrite.deleteLine(Constants.MUTED, line);
             } else if (s != null && !s[1].equals("-1") && OffsetDateTime.now().isBefore(OffsetDateTime.parse(s[1]))) {
                 e.getMessage().delete().queue();
-                e.getChannel().sendMessage((e.getAuthor().getAsMention() + " you are still muted, your mute will expire at " + s[1])).queue(msg -> {
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            msg.delete().queue();
-                        }
-                    }, 5000);
-                });
+                e.getChannel().sendMessage((e.getAuthor().getAsMention() + " you are still muted, your mute will expire at " + s[1])).queue(msg -> new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        msg.delete().queue();
+                    }
+                }, 5000));
             } else if (s != null && s[1].equals("-1")) {
                 e.getMessage().delete().queue();
-                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " you are permanently muted!").queue(msg -> {
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            msg.delete().queue();
-                        }
-                    }, 5000);
-                });
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " you are permanently muted!").queue(msg -> new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        msg.delete().queue();
+                    }
+                }, 5000));
             }
         }
 
